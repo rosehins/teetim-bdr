@@ -5,7 +5,7 @@ $nb = intval($_GET['nb']) ?? 10;
 // Étape 1: connexion à la BD MySQL (avec le librairie PDO)
 // Mini étape 0: définir le DSN (Data Source Name)
 $dsn = "mysql:host=db;dbname=teetim;charset=utf8mb4"; // chaîne spécifique à MySQL
-$cnx = new PDO($dsn, 'teetim', 'teetim' [
+$cnx = new PDO($dsn, 'teetim', 'teetim', [
     PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT,
     PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ
 ]);

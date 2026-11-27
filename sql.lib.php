@@ -10,8 +10,8 @@ const BD = "teetim";
 // Librairie de code pour manipuler les données relationnelles
 
 function connexion() {
-    $dsn = "mysql:host=".HOTE.";dbname=";charset=utf8mb4";
-    return new PDO($dsn, UTIL, MPD)
+    $dsn = "mysql:host=".HOTE.";dbname=".BD.";charset=utf8mb4";
+    return new PDO($dsn, UTIL, MPD);
 }
 
 function creer() {

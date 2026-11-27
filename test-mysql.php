@@ -1,18 +1,24 @@
 <?php
-// Étape 1: connexion à la BD MySQL
-$cnx = new mysqli('db', 'teetim', 'teetim', 'teetim');
+$thm = $_GET['thm'] ?? 1;
+$nb = intval($_GET['nb']) ?? 10;
 
-// Étape 2: écrire une requête SQL
-$sql = "SELECT theme.nom, SUM(ventes) 
-    FROM produit 
-    JOIN theme ON thm_id=theme.id
-    WHERE cat_id=1
-    GROUP BY thm_id
-    ORDER BY ventes_totales DESC";
+// Étape 1: connexion à la BD MySQL (avec le librairie PDO)
+// Mini étape 0: définir le DSN (Data Source Name)
+$dsn = "mysql:host=db;dbname=teetim;charset=utf8mb4"; // chaîne spécifique à MySQL
+$cnx = new PDO($dsn, 'teetim', 'teetim' [
+    PDO::ATTR_ERRMODE => PDO::ERRMODE_SILENT,
+    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_OBJ
+]);
+
+// Étape 2: écrire et préparer une requête **** paramétrée**** SQL
+$sql = "SELECT nom, prix, ventes FROM produit WHERE thm_id=? LIMIT 10";
+$reqParametree = $cnx->prepare($sql);
 
 // Étape 3: Soumettre la requête SQL au serveur MySQL
-$resultat = $cnx->query($sql);
-
+$resultat = $reqParametree->execute([$thm]);
+$enregistrements = $reqParametree->fetchAll(PDO::FETCH_OBJ);
+// Déboguer
+// print_r($enregistrements);
 ?>
 
 <!DOCTYPE html>
@@ -23,14 +29,16 @@ $resultat = $cnx->query($sql);
     <title>Test intégration PHP/MySQL</title>
 </head>
 <body>
-    <h2>Ventes totales par nom de thème</h2>
-    <ul>
-<!-- Utiliser le résultat de la requête obtenu en haut de la page pour afficher les LI dans la liste...-->
+    <h2><?= $nb; ?> produits par thème (<?= $thm; ?>) </h2>
 
-    <?php while($ligne = $resultat->fetch_object()) : ?>
-        <li><?= $ligne['nom']; ?> : <?= $ligne->ventes_totales; ?></li>
-        <?php endwhile; ?>
-    </ul>
+    <?php foreach($enregistrements as $ligne) : ?>
+        <div>
+            <span><?= $ligne->nom; ?></span> /
+            <span><?= $ligne->prix; ?></span> /
+            <span><?= $ligne->ventes; ?></span>
+
+        </div>
+        <?php endforeach; ?>
     
     
 </body>
